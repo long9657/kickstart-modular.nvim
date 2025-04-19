@@ -6,12 +6,12 @@ return {
     config = function()
       -- Set default theme
       local themes = {
+        'cyberdream',
+        'tender',
         'catppuccin',
         'tokyonight',
         'kanagawa',
         'rose-pine',
-        'tender',
-        'cyberdream',
       }
 
       local current_theme_index = 1
@@ -62,6 +62,7 @@ return {
     priority = 910,
     config = function()
       require('cyberdream').setup {
+        transparent = true,
         italic_comments = true,
         hide_fillchars = false,
         borderless_telescope = true,
