@@ -11,7 +11,15 @@ return {
     -- OPTIONAL:
     --   `nvim-notify` is only needed, if you want to use the notification view.
     --   If not available, we use `mini` as the fallback
-    'rcarriga/nvim-notify',
+    {
+      'rcarriga/nvim-notify',
+      opts = {
+        render = 'minimal',
+        stages = 'slide',
+        timeout = 2000,
+        fps = 144,
+      },
+    },
   },
   config = function()
     require('notify').setup {
@@ -19,6 +27,8 @@ return {
     }
     require('noice').setup {
       lsp = {
+        progress = { enabled = false },
+
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {
           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
@@ -26,6 +36,7 @@ return {
           ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
         },
       },
+
       -- you can enable a preset for easier configuration
       presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
