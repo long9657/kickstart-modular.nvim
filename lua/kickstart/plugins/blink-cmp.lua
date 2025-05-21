@@ -74,14 +74,14 @@ return {
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = {
           window = {
-            border = 'rounded',
+            border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
             -- winblend = 0,
           },
           auto_show = false,
           auto_show_delay_ms = 500,
         },
         menu = {
-          border = 'rounded',
+          border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
           -- winblend = 0
         },
       },
@@ -107,7 +107,7 @@ return {
       -- Shows a signature help window while you type arguments for a function
       signature = {
         window = {
-          border = 'rounded',
+          border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
           -- winblend = 0
         },
         enabled = true,

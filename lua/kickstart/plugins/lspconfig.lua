@@ -24,7 +24,7 @@ return {
         version = '^1.0.0',
         opts = {
           ui = {
-            border = 'rounded',
+            border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
           },
         },
       },
@@ -40,7 +40,7 @@ return {
         opts = {
           notification = { -- NOTE: you're missing this outer table
             window = {
-              border = 'rounded',
+              border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
               winblend = 0, -- NOTE: it's winblend, not blend
             },
           },

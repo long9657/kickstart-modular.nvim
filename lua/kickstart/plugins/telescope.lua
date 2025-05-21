@@ -66,6 +66,7 @@ return {
             require('telescope.themes').get_dropdown(),
           },
         },
+        defaults = { borderchars = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' } },
       }
 
       -- Enable Telescope extensions if they are installed

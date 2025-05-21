@@ -14,7 +14,7 @@ return {
     { '<leader>e', ':Neotree toggle<CR>', desc = 'NeoTree toggle', silent = true },
   },
   opts = {
-    popup_border_style = 'rounded',
+    popup_border_style = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
     window = {
       position = 'float',
       mappings = {

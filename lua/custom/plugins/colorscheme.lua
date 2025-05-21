@@ -6,8 +6,8 @@ return {
     config = function()
       -- Set default theme
       local themes = {
+        'tokyonight-night',
         'rose-pine',
-        'tokyonight',
         'catppuccin',
         'kanagawa',
         'cyberdream',
@@ -26,6 +26,7 @@ return {
         end
         local theme = themes[current_theme_index]
         vim.cmd.colorscheme(theme)
+        vim.api.nvim_set_hl(0, 'WinSeparator', { link = 'FloatBorder' })
         vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
         vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
         print('Change nvim theme to: ' .. theme)
