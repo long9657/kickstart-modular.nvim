@@ -4,7 +4,14 @@ return {
     opts = {
       mode = 'float',
       float = {
-        border = 'rounded',
+        border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
+      },
+      filetype = {
+        cpp = {
+          'cd $dir &&',
+          'g++ $fileName -o $dir/build/$fileNameWithoutExt &&',
+          '$dir/build/$fileNameWithoutExt',
+        },
       },
     },
     keys = {
