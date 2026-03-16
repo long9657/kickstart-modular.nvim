@@ -33,9 +33,7 @@ return {
         },
         opts = {},
         config = function(_, opts)
-          if opts then
-            require('luasnip').config.setup(opts)
-          end
+          if opts then require('luasnip').config.setup(opts) end
           vim.tbl_map(function(type) require('luasnip.loaders.from_' .. type).lazy_load() end, { 'vscode', 'snipmate', 'lua' })
           -- friendly-snippets - enable standardized comments snippets
           require('luasnip').filetype_extend('typescript', { 'tsdoc' })
@@ -83,12 +81,8 @@ return {
         ['<C-k>'] = {},
         ['<C-y>'] = {
           function(cmp)
-            if cmp.snippet_active() then
-              return cmp.accept()
-            end
-            if cmp.is_menu_visible() or vim.fn.pumvisible() == 1 then
-              vim.cmd 'let &undolevels = &undolevels'
-            end
+            if cmp.snippet_active() then return cmp.accept() end
+            if cmp.is_menu_visible() or vim.fn.pumvisible() == 1 then vim.cmd 'let &undolevels = &undolevels' end
             return cmp.select_and_accept()
           end,
           'fallback',
@@ -130,17 +124,13 @@ return {
             components = {
               kind_icon = {
                 text = function(ctx)
-                  if ctx.source_id == 'cmdline' then
-                    return
-                  end
+                  if ctx.source_id == 'cmdline' then return end
                   return ctx.kind_icon .. ctx.icon_gap
                 end,
               },
               source_name = {
                 text = function(ctx)
-                  if ctx.source_id == 'cmdline' then
-                    return
-                  end
+                  if ctx.source_id == 'cmdline' then return end
                   return ctx.source_name:sub(1, 4)
                 end,
               },

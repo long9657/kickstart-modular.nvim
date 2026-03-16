@@ -20,7 +20,6 @@ return {
           },
         },
       },
-      },
       -- Maps LSP server names between nvim-lspconfig and Mason package names.
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -139,36 +138,36 @@ return {
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
-         clangd = {
-            InlayHints = {
-              Designators = true,
-              Enabled = true,
-              ParameterNames = true,
-              DeducedTypes = true,
-            },
-            fallbackFlags = { '-std=c++20' },
+        clangd = {
+          InlayHints = {
+            Designators = true,
+            Enabled = true,
+            ParameterNames = true,
+            DeducedTypes = true,
           },
-          html = {},
-          cssls = {},
-          -- gopls = {},
-          basedpyright = {
-            settings = {
-              basedpyright = {
-                analysis = {
-                  typeCheckingMode = 'standard',
-                  diagnosticSeverityOverrides = {
-                    reportAssignmentType = false,
-                    reportArgumentType = 'information',
-                    reportUnusedFunction = 'information',
-                    reportOptionalMemberAccess = 'information',
-                    reportRedeclaration = 'information',
-                    reportImplicitOverride = false,
-                    reportAny = false,
-                  },
+          fallbackFlags = { '-std=c++20' },
+        },
+        html = {},
+        cssls = {},
+        -- gopls = {},
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = 'standard',
+                diagnosticSeverityOverrides = {
+                  reportAssignmentType = false,
+                  reportArgumentType = 'information',
+                  reportUnusedFunction = 'information',
+                  reportOptionalMemberAccess = 'information',
+                  reportRedeclaration = 'information',
+                  reportImplicitOverride = false,
+                  reportAny = false,
                 },
               },
             },
-          }
+          },
+        },
         -- rust_analyzer = {},
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -207,82 +206,78 @@ return {
             Lua = {},
           },
         },
-          ts_ls = {
-            filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx', 'javascript', 'javascriptreact' },
-            cmd = { 'typescript-language-server', '--stdio' },
-            settings = {
-              implicitProjectConfiguration = {
-                checkJs = true,
+        ts_ls = {
+          filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx', 'javascript', 'javascriptreact' },
+          cmd = { 'typescript-language-server', '--stdio' },
+          settings = {
+            implicitProjectConfiguration = {
+              checkJs = true,
+            },
+          },
+        },
+
+        tailwindcss = {},
+        jdtls = {
+          settings = {
+            java = {
+              signatureHelp = { enabled = true },
+              maven = {
+                downloadSources = true,
+              },
+              referencesCodeLens = {
+                enabled = true,
+              },
+              references = {
+                includeDecompiledSources = true,
+              },
+              inlayHints = {
+                parameterNames = {
+                  enabled = 'all',
+                  exclusions = { 'this' },
+                },
+              },
+              format = {
+                enabled = true,
               },
             },
           },
 
-          tailwindcss = {},
-          jdtls = {
-            settings = {
-              java = {
-                signatureHelp = { enabled = true },
-                maven = {
-                  downloadSources = true,
-                },
-                referencesCodeLens = {
-                  enabled = true,
-                },
-                references = {
-                  includeDecompiledSources = true,
-                },
-                inlayHints = {
-                  parameterNames = {
-                    enabled = 'all',
-                    exclusions = { 'this' },
-                  },
-                },
-                format = {
-                  enabled = true,
-                },
-              },
-            },
-
-            init_options = {
-              bundles = {},
-            },
-            handlers = {
-              -- filter noisy notifications
-              ['$/progress'] = function(err, result, ctx)
-                local msg = result.value.message
-                if msg and msg:sub(1, 18) == 'Validate documents' then
-                  return
-                end
-                if msg and msg:sub(1, 19) == 'Publish Diagnostics' then
-                  return
-                end
-                -- pass through to normal handler
-                vim.lsp.handlers['$/progress'](err, result, ctx)
-              end,
-            },
+          init_options = {
+            bundles = {},
           },
-
-          eslint = {
-            settings = {
-              -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
-              workingDirectories = { mode = 'auto' },
-            },
+          handlers = {
+            -- filter noisy notifications
+            ['$/progress'] = function(err, result, ctx)
+              local msg = result.value.message
+              if msg and msg:sub(1, 18) == 'Validate documents' then return end
+              if msg and msg:sub(1, 19) == 'Publish Diagnostics' then return end
+              -- pass through to normal handler
+              vim.lsp.handlers['$/progress'](err, result, ctx)
+            end,
           },
-          -- require('java').setup {
-          --   -- Your custom jdtls settings goes here
-          --   jdk = {
-          --     auto_install = false,
-          --   },
-          --   notifications = {
-          --     -- enable 'Configuring DAP' & 'DAP configured' messages on start up
-          --     dap = false,
-          --   },
-          -- }
-          --
-          -- require('lspconfig').jdtls.setup {
-          --   -- Your custom nvim-java configuration goes here
-          -- }
-        }
+        },
+
+        eslint = {
+          settings = {
+            -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+            workingDirectories = { mode = 'auto' },
+          },
+        },
+        -- require('java').setup {
+        --   -- Your custom jdtls settings goes here
+        --   jdk = {
+        --     auto_install = false,
+        --   },
+        --   notifications = {
+        --     -- enable 'Configuring DAP' & 'DAP configured' messages on start up
+        --     dap = false,
+        --   },
+        -- }
+        --
+        -- require('lspconfig').jdtls.setup {
+        --   -- Your custom nvim-java configuration goes here
+        -- }
+      }
 
       -- Ensure the servers and tools above are installed
       --

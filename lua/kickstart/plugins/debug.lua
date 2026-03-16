@@ -123,9 +123,7 @@ return {
         name = 'Launch file',
         type = 'cppdbg',
         request = 'launch',
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
+        program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file') end,
         cwd = '${workspaceFolder}',
         stopAtEntry = true,
       },
@@ -137,9 +135,7 @@ return {
         miDebuggerServerAddress = 'localhost:1234',
         miDebuggerPath = '/usr/bin/gdb',
         cwd = '${workspaceFolder}',
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
+        program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file') end,
       },
     }
     dap.configurations.c = dap.configurations.cpp
