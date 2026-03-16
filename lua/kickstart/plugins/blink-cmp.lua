@@ -1,3 +1,5 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   { -- Autocompletion
     'saghen/blink.cmp',
@@ -12,9 +14,7 @@ return {
           -- Build Step is needed for regex support in snippets.
           -- This step is not supported in many windows environments.
           -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
+          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
           return 'make install_jsregexp'
         end)(),
         dependencies = {
@@ -53,8 +53,6 @@ return {
           require('luasnip').filetype_extend('sh', { 'shelldoc' })
         end,
       },
-
-      'folke/lazydev.nvim',
     },
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
@@ -156,30 +154,7 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
-        providers = {
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          buffer = {
-            -- Make buffer compeletions appear at the end.
-            score_offset = -100,
-            enabled = function()
-              -- Filetypes for which buffer completions are enabled; add filetypes to extend:
-              local enabled_filetypes = {
-                'markdown',
-                'text',
-              }
-              local filetype = vim.bo.filetype
-              return vim.tbl_contains(enabled_filetypes, filetype)
-            end,
-          },
-          -- On WSL2, blink.cmp may cause the editor to freeze due to a known limitation.
-          -- To address this issue, uncomment the following configuration:
-          -- cmdline = {
-          --   enabled = function()
-          --     return vim.fn.getcmdtype() ~= ':' or not vim.fn.getcmdline():match "^[%%0-9,'<>%-]*!"
-          --   end,
-          -- },
-        },
+        default = { 'lsp', 'path', 'snippets' },
       },
 
       snippets = { preset = 'luasnip' },

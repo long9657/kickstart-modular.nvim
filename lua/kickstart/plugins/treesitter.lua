@@ -1,6 +1,14 @@
--- this is what you previously passed to ensure_installed
-local languages = {
-  'bash',
+---@module 'lazy'
+---@type LazySpec
+return {
+  { -- Highlight, edit, and navigate code
+    'nvim-treesitter/nvim-treesitter',
+    lazy = false,
+    build = ':TSUpdate',
+    branch = 'main',
+    -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
+    config = function()
+      local parsers = {  'bash',
   'cpp',
   'c',
   'diff',
@@ -20,42 +28,29 @@ local languages = {
   'tsx',
   'javascript',
   'typescript',
-  'json',
-}
-return {
-  'nvim-treesitter/nvim-treesitter',
-  lazy = false,
-  build = ':TSUpdate',
-  config = function()
-    -- replicate `ensure_installed`, runs asynchronously, skips existing languages
-    require('nvim-treesitter').install(languages)
+  'json', }
+      require('nvim-treesitter').install(parsers)
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
 
-    vim.api.nvim_create_autocmd('FileType', {
-      group = vim.api.nvim_create_augroup('treesitter.setup', {}),
-      callback = function(args)
-        local buf = args.buf
-        local filetype = args.match
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then return end
 
-        -- you need some mechanism to avoid running on buffers that do not
-        -- correspond to a language (like oil.nvim buffers), this implementation
-        -- checks if a parser exists for the current language
-        local language = vim.treesitter.language.get_lang(filetype) or filetype
-        if not vim.treesitter.language.add(language) then
-          return
-        end
+          -- check if parser exists and load it
+          if not vim.treesitter.language.add(language) then return end
+          -- enables syntax highlighting and other treesitter features
+          vim.treesitter.start(buf, language)
 
-        -- replicate `fold = { enable = true }`
-        vim.wo.foldmethod = 'expr'
-        vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          -- enables treesitter based folds
+          -- for more info on folds see `:help folds`
+          -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          -- vim.wo.foldmethod = 'expr'
 
-        -- replicate `highlight = { enable = true }`
-        vim.treesitter.start(buf, language)
-
-        -- replicate `indent = { enable = true }`
-        vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-
-        -- `incremental_selection = { enable = true }` cannot be easily replicated
-      end,
-    })
-  end,
+          -- enables treesitter based indentation
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
+    end,
+  },
 }
