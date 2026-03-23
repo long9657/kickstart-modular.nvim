@@ -29,7 +29,6 @@ return {
               }
             end,
           },
-          'benfowler/telescope-luasnip.nvim',
         },
         opts = {},
         config = function(_, opts)
