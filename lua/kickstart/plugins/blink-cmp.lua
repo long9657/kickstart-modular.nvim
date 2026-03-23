@@ -104,18 +104,12 @@ return {
         -- },
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        list = { selection = { preselect = false, auto_insert = false } },
+        list = { selection = { preselect = false, auto_insert = true } },
         documentation = {
-          window = {
-            border = 'rounded',
-            -- winblend = 0,
-          },
           auto_show = true,
           auto_show_delay_ms = 500,
         },
         menu = {
-          border = 'rounded',
-          -- winblend = 0
           draw = {
             columns = {
               { 'label', 'label_description', 'source_name', gap = 1 },
@@ -160,10 +154,6 @@ return {
 
       -- Shows a signature help window while you type arguments for a function
       signature = {
-        window = {
-          border = 'rounded',
-          -- winblend = 0
-        },
         enabled = true,
       },
     },
