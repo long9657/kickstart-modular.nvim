@@ -6,8 +6,8 @@ return {
     config = function()
       -- Set default theme
       local themes = {
-        'solarized-osaka',
         'tokyonight-night',
+        'solarized-osaka',
         'catppuccin',
         'cyberdream',
       }
