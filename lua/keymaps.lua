@@ -147,4 +147,12 @@ vim.keymap.set('v', '>', '>gv')
 vim.keymap.set('n', 'gs', '_', { noremap = true, silent = true })
 vim.keymap.set('n', 'gl', '$', { noremap = true, silent = true })
 
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
+  pattern = { 'PlenaryTestPopup', 'help', 'lspinfo', 'notify', 'qf', 'query', 'oil', 'startuptime', 'checkhealth', 'man' },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set('n', 'q', function() pcall(vim.api.nvim_buf_delete, event.buf, { force = true }) end, { buffer = event.buf, silent = true })
+  end,
+})
 -- vim: ts=2 sts=2 sw=2 et
