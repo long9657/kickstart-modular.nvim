@@ -104,14 +104,15 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
--- auto-create missing dirs when saving a file
-vim.api.nvim_create_autocmd('BufWritePre', {
-  desc = 'Auto-create missing dirs when saving a file',
+-- Auto create dir when saving a file, in case some intermediate directory does not exist
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+  desc = 'Auto create dir when saving a file, in case some intermediate directory does not exist',
   group = vim.api.nvim_create_augroup('kickstart-auto-create-dir', { clear = true }),
   pattern = '*',
-  callback = function()
-    local dir = vim.fn.expand '<afile>:p:h'
-    if vim.fn.isdirectory(dir) == 0 then vim.fn.mkdir(dir, 'p') end
+  callback = function(event)
+    if event.match:match '^%w%w+:[\\/][\\/]' then return end
+    local file = vim.uv.fs_realpath(event.match) or event.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
   end,
 })
 
