@@ -23,35 +23,25 @@ return {
         win_options = {
           winblend = 0,
         },
-        vim.api.nvim_create_autocmd('FileType', {
-          pattern = 'oil',
-          callback = function()
-            local oil_actions = require 'oil.actions'
-
-            local map = function(lhs, rhs, opts)
-              opts = vim.tbl_extend('force', { buffer = true, noremap = true, silent = true }, opts or {})
-              vim.keymap.set('n', lhs, rhs, opts)
-            end
-
-            map('g?', oil_actions.show_help.callback)
-            map('<tab>', oil_actions.select.callback)
-            map('<CR>', oil_actions.select.callback)
-            map('<C-t>', function() oil_actions.select.callback { tab = true } end)
-            map('<C-p>', function() oil_actions.preview.callback { vertical = true, split = 'rightbelow' } end)
-            map('<C-c>', oil_actions.close.callback)
-            map('R', oil_actions.refresh.callback)
-            map('-', oil_actions.parent.callback)
-            map('_', oil_actions.open_cwd.callback)
-            map('`', oil_actions.cd.callback)
-            map('~', function() oil_actions.cd.callback { scope = 'tab' } end)
-            map('gs', oil_actions.change_sort.callback)
-            map('gx', oil_actions.open_external.callback)
-            map('H', oil_actions.toggle_hidden.callback)
-            map('g\\', oil_actions.toggle_trash.callback)
-          end,
-        }),
-        use_default_keymaps = false,
       },
+      keymaps = {
+        ['g?'] = 'actions.show_help',
+        ['<tab>'] = 'actions.select',
+        ['<CR>'] = 'actions.select',
+        ['<C-t>'] = { 'actions.select', opts = { tab = true } },
+        ['<C-p>'] = { 'actions.preview', opts = { vertical = true, split = 'rightbelow' } },
+        ['<C-c>'] = 'actions.close',
+        ['R'] = 'actions.refresh',
+        ['-'] = 'actions.parent',
+        ['_'] = 'actions.open_cwd',
+        ['`'] = 'actions.cd',
+        ['~'] = { 'actions.cd', opts = { scope = 'tab' } },
+        ['gs'] = 'actions.change_sort',
+        ['gx'] = 'actions.open_external',
+        ['H'] = 'actions.toggle_hidden',
+        ['g\\'] = 'actions.toggle_trash',
+      },
+      use_default_keymaps = false,
     }
 
     vim.keymap.set('n', '<leader>vv', require('oil').open, { desc = 'Open parent directory' })
