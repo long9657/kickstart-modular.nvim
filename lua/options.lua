@@ -2,8 +2,7 @@
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
--- vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
--- vim.cmd.colorscheme 'catppuccin'
+vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
@@ -75,9 +74,6 @@ vim.o.cursorlineopt = 'number'
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 vim.o.incsearch = true
-vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
-vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
-vim.api.nvim_set_hl(0, 'WinSeparator', { link = 'FloatBorder' })
 vim.o.linebreak = true
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)

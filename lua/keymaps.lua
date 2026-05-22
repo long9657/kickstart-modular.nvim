@@ -156,4 +156,14 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.keymap.set('n', 'q', function() pcall(vim.api.nvim_buf_delete, event.buf, { force = true }) end, { buffer = event.buf, silent = true })
   end,
 })
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
+    vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
+    vim.api.nvim_set_hl(0, 'WinSeparator', { link = 'FloatBorder' })
+  end,
+})
+
 -- vim: ts=2 sts=2 sw=2 et

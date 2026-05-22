@@ -12,7 +12,6 @@ return {
     { '<leader>wa', '<cmd>AutoSession toggle<CR>', desc = 'Toggle autosave' },
   },
   opts = {
-    (function() vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions' end)(),
     cwd_change_handling = true,
     auto_restore_last_session = false,
     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
