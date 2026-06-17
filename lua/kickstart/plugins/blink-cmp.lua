@@ -11,8 +11,25 @@ require('luasnip').setup {}
 --    See the README about individual language/framework/plugin snippets:
 --    https://github.com/rafamadriz/friendly-snippets
 --
--- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
--- require('luasnip.loaders.from_vscode').lazy_load()
+vim.pack.add { gh 'rafamadriz/friendly-snippets' }
+require('luasnip.loaders.from_vscode').lazy_load {
+  paths = { './lua/snippets/' },
+}
+vim.tbl_map(function(type) require('luasnip.loaders.from_' .. type).lazy_load() end, { 'vscode', 'snipmate', 'lua' })
+-- friendly-snippets - enable standardized comments snippets
+require('luasnip').filetype_extend('typescript', { 'tsdoc' })
+require('luasnip').filetype_extend('javascript', { 'jsdoc' })
+require('luasnip').filetype_extend('lua', { 'luadoc' })
+require('luasnip').filetype_extend('python', { 'pydoc' })
+require('luasnip').filetype_extend('rust', { 'rustdoc' })
+require('luasnip').filetype_extend('cs', { 'csharpdoc' })
+require('luasnip').filetype_extend('java', { 'javadoc' })
+require('luasnip').filetype_extend('c', { 'cdoc' })
+require('luasnip').filetype_extend('cpp', { 'cppdoc' })
+require('luasnip').filetype_extend('php', { 'phpdoc' })
+require('luasnip').filetype_extend('kotlin', { 'kdoc' })
+require('luasnip').filetype_extend('ruby', { 'rdoc' })
+require('luasnip').filetype_extend('sh', { 'shelldoc' })
 
 -- [[ Autocomplete Engine ]]
 vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -40,6 +57,15 @@ require('blink.cmp').setup {
     --
     -- See `:help blink-cmp-config-keymap` for defining your own keymap
     preset = 'default',
+    ['<C-k>'] = {},
+    ['<C-y>'] = {
+      function(cmp)
+        if cmp.snippet_active() then return cmp.accept() end
+        if cmp.is_menu_visible() or vim.fn.pumvisible() == 1 then vim.cmd 'let &undolevels = &undolevels' end
+        return cmp.select_and_accept()
+      end,
+      'fallback',
+    },
 
     -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
     --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -54,7 +80,37 @@ require('blink.cmp').setup {
   completion = {
     -- By default, you may press `<c-space>` to show the documentation.
     -- Optionally, set `auto_show = true` to show the documentation after a delay.
-    documentation = { auto_show = false, auto_show_delay_ms = 500 },
+    list = { selection = { preselect = false, auto_insert = true } },
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 500,
+    },
+    menu = {
+      draw = {
+        columns = {
+          { 'label', 'label_description', 'source_name', gap = 1 },
+          { 'kind_icon', 'kind' },
+        },
+        components = {
+          kind_icon = {
+            text = function(ctx)
+              if ctx.source_id == 'cmdline' then return end
+              return ctx.kind_icon .. ctx.icon_gap
+            end,
+          },
+          source_name = {
+            text = function(ctx)
+              if ctx.source_id == 'cmdline' then return end
+              return ctx.source_name:sub(1, 4)
+            end,
+          },
+        },
+        -- for highlighting in completion menu
+        treesitter = {
+          'lsp',
+        },
+      },
+    },
   },
 
   sources = {
@@ -70,7 +126,7 @@ require('blink.cmp').setup {
   -- the rust implementation via `'prefer_rust_with_warning'`
   --
   -- See `:help blink-cmp-config-fuzzy` for more information
-  fuzzy = { implementation = 'lua' },
+  fuzzy = { implementation = 'prefer_rust_with_warning' },
 
   -- Shows a signature help window while you type arguments for a function
   signature = { enabled = true },

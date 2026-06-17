@@ -103,7 +103,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
-  -- clangd = {},
+  clangd = {
+    InlayHints = {
+      Designators = true,
+      Enabled = true,
+      ParameterNames = true,
+      DeducedTypes = true,
+    },
+    fallbackFlags = { '-std=c++20' },
+  },
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
@@ -112,7 +120,72 @@ local servers = {
   --    https://github.com/pmizio/typescript-tools.nvim
   --
   -- But for many setups, the LSP (`ts_ls`) will work just fine
-  -- ts_ls = {},
+  ts_ls = {
+    filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx', 'javascript', 'javascriptreact' },
+    cmd = { 'typescript-language-server', '--stdio' },
+    settings = {
+      implicitProjectConfiguration = {
+        checkJs = true,
+      },
+    },
+  },
+  html = {},
+  cssls = {},
+  basedpyright = {
+    settings = {
+      basedpyright = {
+        analysis = {
+          typeCheckingMode = 'standard',
+          diagnosticSeverityOverrides = {
+            reportAssignmentType = false,
+            reportArgumentType = 'information',
+            reportUnusedFunction = 'information',
+            reportOptionalMemberAccess = 'information',
+            reportRedeclaration = 'information',
+            reportImplicitOverride = false,
+            reportAny = false,
+          },
+        },
+      },
+    },
+  },
+  tailwindcss = {},
+  jdtls = {
+    settings = {
+      java = {
+        signatureHelp = { enabled = true },
+        maven = { downloadSources = true },
+        referencesCodeLens = { enabled = true },
+        references = { includeDecompiledSources = true },
+        inlayHints = {
+          parameterNames = { enabled = 'all', exclusions = { 'this' } },
+        },
+        format = { enabled = true },
+      },
+    },
+    init_options = { bundles = {} },
+    handlers = {
+      ['$/progress'] = function(err, result, ctx)
+        local msg = result.value.message
+        if msg and msg:sub(1, 18) == 'Validate documents' then return end
+        if msg and msg:sub(1, 19) == 'Publish Diagnostics' then return end
+        vim.lsp.handlers['$/progress'](err, result, ctx)
+      end,
+    },
+  },
+  eslint = {
+    settings = { workingDirectories = { mode = 'auto' } },
+  },
+  emmet_ls = {
+    filetypes = { 'css', 'eruby', 'html', 'javascript', 'javascriptreact', 'less', 'sass', 'scss', 'svelte', 'pug', 'typescriptreact', 'vue' },
+    init_options = {
+      html = {
+        options = {
+          ['bem.enabled'] = true,
+        },
+      },
+    },
+  },
 
   stylua = {}, -- Used to format Lua code
 
@@ -156,10 +229,13 @@ vim.pack.add {
   gh 'mason-org/mason.nvim',
   gh 'mason-org/mason-lspconfig.nvim',
   gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
+  gh 'mfussenegger/nvim-jdtls',
 }
 
 -- Automatically install LSPs and related tools to stdpath for Neovim
-require('mason').setup {}
+require('mason').setup {
+  ui = { border = 'rounded' },
+}
 
 -- Ensure the servers and tools above are installed
 --
@@ -171,6 +247,13 @@ require('mason').setup {}
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
   -- You can add other tools here that you want Mason to install
+  'prettier',
+  'clang-format',
+  'isort',
+  'black',
+  'pylint',
+  'markdownlint',
+  'google-java-format',
 })
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }

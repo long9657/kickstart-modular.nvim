@@ -1,6 +1,9 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+--Fix Whichkey scroll issue
+pcall(vim.keymap.del, 'n', '<C-w><C-d>')
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -31,6 +34,16 @@ vim.diagnostic.config {
 
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+--Delete blank lines
+vim.keymap.set('n', '<Leader>wt', [[:g/^$/d<cr>:noh<CR>]], { desc = 'Delete blank lines', silent = true })
+
+--Vertical Split New Buffer
+vim.keymap.set('n', '<leader>vn', '<cmd>vnew<cr>', { desc = 'Vertical Split New Buffer', silent = true })
+
+-- Copying buffer paths
+vim.keymap.set('n', '<leader>yr', "<cmd>let @+ = expand('%:~:.')<cr>", { desc = 'Copy Relative Path', silent = true })
+vim.keymap.set('n', '<leader>yf', "<cmd>let @+ = expand('%:p')<cr>", { desc = 'Copy Full Path', silent = true })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -38,6 +51,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- Close current buffer
+vim.keymap.set('n', '<leader>Q', ':bd<CR>', { desc = 'Close current buffer' })
+vim.keymap.set('n', '<leader>xe', '<cmd>%bd|e#<cr>', { desc = 'Close all buffer but current' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -49,10 +66,22 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+vim.keymap.set('x', '<leader>p', '"_dP')
+
+vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { desc = 'general save file' })
+vim.keymap.set('n', '<C-c>', '<cmd>%y+<CR>', { desc = 'general copy whole file' })
+vim.keymap.set('i', '<C-b>', '<ESC>^i', { desc = 'move beginning of line' })
+vim.keymap.set('i', '<C-e>', '<End>', { desc = 'move end of line' })
+vim.keymap.set('i', '<C-h>', '<Left>', { desc = 'move left' })
+vim.keymap.set('i', '<C-l>', '<Right>', { desc = 'move right' })
+vim.keymap.set('i', '<C-j>', '<Down>', { desc = 'move down' })
+vim.keymap.set('i', '<C-k>', '<Up>', { desc = 'move up' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -70,6 +99,76 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function() vim.hl.on_yank() end,
+})
+
+-- Restore cursor position on file open
+vim.api.nvim_create_autocmd('BufReadPost', {
+  desc = 'Restore cursor position on file open',
+  group = vim.api.nvim_create_augroup('kickstart-restore-cursor', { clear = true }),
+  pattern = '*',
+  callback = function()
+    local line = vim.fn.line '\'"'
+    if line > 1 and line <= vim.fn.line '$' then vim.cmd 'normal! g\'"' end
+  end,
+})
+
+-- Auto create dir when saving a file, in case some intermediate directory does not exist
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+  desc = 'Auto create dir when saving a file, in case some intermediate directory does not exist',
+  group = vim.api.nvim_create_augroup('kickstart-auto-create-dir', { clear = true }),
+  pattern = '*',
+  callback = function(event)
+    if event.match:match '^%w%w+:[\\/][\\/]' then return end
+    local file = vim.uv.fs_realpath(event.match) or event.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ':p:h'), 'p')
+  end,
+})
+
+-- better up/down
+vim.keymap.set({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { desc = 'Down', expr = true })
+vim.keymap.set({ 'n', 'x' }, '<Down>', "v:count == 0 ? 'gj' : 'j'", { desc = 'Down', expr = true })
+vim.keymap.set({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { desc = 'Up', expr = true })
+vim.keymap.set({ 'n', 'x' }, '<Up>', "v:count == 0 ? 'gk' : 'k'", { desc = 'Up', expr = true })
+
+-- Disable ESLint LSP server and hide virtual text in Neovim
+local isLspDiagnosticsVisible = true
+vim.keymap.set('n', '<leader>lx', function()
+  isLspDiagnosticsVisible = not isLspDiagnosticsVisible
+  vim.diagnostic.config {
+    virtual_text = isLspDiagnosticsVisible,
+    underline = isLspDiagnosticsVisible,
+  }
+end, { desc = 'Hide LSP virtual text in Neovim' })
+
+-- Add undo break-points
+vim.keymap.set('i', ',', ',<c-g>u')
+vim.keymap.set('i', '.', '.<c-g>u')
+vim.keymap.set('i', ';', ';<c-g>u')
+
+-- better indenting
+vim.keymap.set('v', '<', '<gv')
+vim.keymap.set('v', '>', '>gv')
+
+-- Using H/L to go to the begining and the end of line
+vim.keymap.set('n', 'gs', '_', { noremap = true, silent = true })
+vim.keymap.set('n', 'gl', '$', { noremap = true, silent = true })
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
+  pattern = { 'PlenaryTestPopup', 'help', 'lspinfo', 'notify', 'qf', 'query', 'oil', 'startuptime', 'checkhealth', 'man' },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set('n', 'q', function() pcall(vim.api.nvim_buf_delete, event.buf, { force = true }) end, { buffer = event.buf, silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
+    vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
+    vim.api.nvim_set_hl(0, 'WinSeparator', { link = 'FloatBorder' })
+  end,
 })
 
 -- vim: ts=2 sts=2 sw=2 et

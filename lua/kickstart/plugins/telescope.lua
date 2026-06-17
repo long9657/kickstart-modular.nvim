@@ -29,6 +29,8 @@ local telescope_plugins = {
   gh 'nvim-lua/plenary.nvim',
   gh 'nvim-telescope/telescope.nvim',
   gh 'nvim-telescope/telescope-ui-select.nvim',
+  gh 'jvgrootveld/telescope-zoxide',
+  gh 'benfowler/telescope-luasnip.nvim',
 }
 if vim.fn.executable 'make' == 1 then table.insert(telescope_plugins, gh 'nvim-telescope/telescope-fzf-native.nvim') end
 
@@ -45,18 +47,56 @@ require('telescope').setup {
   --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
   --   },
   -- },
-  -- pickers = {}
+  pickers = {
+    colorscheme = {
+      enable_preview = true,
+    },
+  },
+  defaults = {
+    sorting_strategy = 'ascending',
+    layout_config = {
+      horizontal = { prompt_position = 'top' },
+    },
+  },
   extensions = {
     ['ui-select'] = { require('telescope.themes').get_dropdown() },
+    zoxide = {
+      prompt_title = '[ Walking on the shoulders of TJ ]',
+      mappings = {
+        default = {
+          after_action = function(selection) print('Update to (' .. selection.z_score .. ') ' .. selection.path) end,
+        },
+      },
+    },
   },
 }
 
 -- Enable Telescope extensions if they are installed
+pcall(require('telescope').load_extension, 'luasnip')
 pcall(require('telescope').load_extension, 'fzf')
 pcall(require('telescope').load_extension, 'ui-select')
+pcall(require('telescope').load_extension, 'zoxide')
 
 -- See `:help telescope.builtin`
 local builtin = require 'telescope.builtin'
+vim.keymap.set('n', '<leader>.', function() builtin.find_files { cwd = vim.fn.expand '%:p:h' } end, {
+  desc = 'Find sibling files of current file',
+})
+vim.keymap.set('n', '<leader>fm', function()
+  local filetype = vim.bo.filetype
+  local symbols_map = {
+    python = 'function',
+    javascript = 'function',
+    typescript = 'function',
+    java = 'class',
+    lua = 'function',
+    go = { 'method', 'struct', 'interface' },
+  }
+  local symbols = symbols_map[filetype] or 'function'
+  require('telescope.builtin').lsp_document_symbols {
+    symbols = symbols,
+  }
+end, { desc = 'LSP Symbols (Telescope)' })
 vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
 vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
@@ -66,6 +106,16 @@ vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]re
 vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+if vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1 then
+  vim.keymap.set(
+    'n',
+    '<leader>sz',
+    function() require('telescope').extensions.zoxide.list { cmd = { 'pwsh', '-nop', '-c', 'zoxide query -ls' } } end,
+    { desc = '[S]earch [Z]oxide list' }
+  )
+else
+  vim.keymap.set('n', '<leader>sz', require('telescope').extensions.zoxide.list, { desc = '[S]earch [Z]oxide list' })
+end
 vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
 vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -107,7 +157,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to Telescope to change the theme, layout, etc.
   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
+    winblend = 0,
     previewer = false,
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
@@ -128,5 +178,6 @@ vim.keymap.set(
 
 -- Shortcut for searching your Neovim configuration files
 vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config', follow = true } end, { desc = '[S]earch [N]eovim files' })
+vim.keymap.set('n', '<leader>sW', function() builtin.find_files { cwd = '~/.config/wezterm/' } end, { desc = '[S]earch [W]ezterm files' })
 
 -- vim: ts=2 sts=2 sw=2 et
