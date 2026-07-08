@@ -22,15 +22,6 @@ if vim.g.neovide then
   vim.keymap.set('n', '<C-=>', function() change_scale_factor(1.25) end)
   vim.keymap.set('n', '<C-->', function() change_scale_factor(1 / 1.25) end)
 end
--- Set <space> as the leader key
--- See `:help mapleader`
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 require 'options'
@@ -38,17 +29,17 @@ require 'options'
 -- [[ Basic Keymaps ]]
 require 'keymaps'
 
--- [[ Floating terminal ]]
-require 'floating-term'
-
---[[ Help-floating ]]
-require 'help-floating'
-
 -- [[ Set up vim.pack ]]
 require 'pack'
 
 -- [[ Configure and install plugins ]]
 require 'plugins'
+
+-- [[ Floating terminal ]]
+require 'floating-term'
+
+--[[ Help-floating ]]
+require 'help-floating'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
