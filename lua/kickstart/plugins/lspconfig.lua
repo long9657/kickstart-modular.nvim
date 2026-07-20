@@ -150,29 +150,6 @@ local servers = {
     },
   },
   tailwindcss = {},
-  jdtls = {
-    settings = {
-      java = {
-        signatureHelp = { enabled = true },
-        maven = { downloadSources = true },
-        referencesCodeLens = { enabled = true },
-        references = { includeDecompiledSources = true },
-        inlayHints = {
-          parameterNames = { enabled = 'all', exclusions = { 'this' } },
-        },
-        format = { enabled = true },
-      },
-    },
-    init_options = { bundles = {} },
-    handlers = {
-      ['$/progress'] = function(err, result, ctx)
-        local msg = result.value.message
-        if msg and msg:sub(1, 18) == 'Validate documents' then return end
-        if msg and msg:sub(1, 19) == 'Publish Diagnostics' then return end
-        vim.lsp.handlers['$/progress'](err, result, ctx)
-      end,
-    },
-  },
   eslint = {
     settings = { workingDirectories = { mode = 'auto' } },
   },
@@ -247,6 +224,7 @@ require('mason').setup {
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
   -- You can add other tools here that you want Mason to install
+  'jdtls',
   'prettier',
   'clang-format',
   'isort',
