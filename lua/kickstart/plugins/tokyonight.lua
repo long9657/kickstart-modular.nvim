@@ -19,7 +19,6 @@ require('tokyonight').setup {
 -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
 -- vim.cmd.colorscheme 'tokyonight-night'
 
-local function gh(repo) return 'https://github.com/' .. repo end
 vim.pack.add {
   gh 'catppuccin/nvim',
   gh 'scottmckendry/cyberdream.nvim',
