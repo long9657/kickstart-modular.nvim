@@ -13,7 +13,7 @@ snipe.setup {
     dictionary = 'asdfwecmpghio',
   },
   navigate = {
-    under_cursor = 'l',
+    under_cursor = '<tab>',
     cancel_snipe = { '<esc>', 'q' },
     open_split = 'S',
   },
