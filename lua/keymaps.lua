@@ -165,8 +165,8 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = '*',
   callback = function()
-    vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
-    vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
+    -- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = 'white' })
+    -- vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#ead84e' })
     vim.api.nvim_set_hl(0, 'WinSeparator', { link = 'FloatBorder' })
     vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal', { fg = '#5e81ac' })
     vim.api.nvim_set_hl(0, 'MiniStatuslineModeInsert', { fg = '#a3be8c' })
