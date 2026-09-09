@@ -51,6 +51,9 @@ require('telescope').setup {
     colorscheme = {
       enable_preview = true,
     },
+    find_files = {
+      hidden = true,
+    },
   },
   defaults = {
     sorting_strategy = 'ascending',
