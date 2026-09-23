@@ -210,7 +210,7 @@ vim.pack.add {
   gh 'mason-org/mason.nvim',
   gh 'mason-org/mason-lspconfig.nvim',
   gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
-  gh 'mfussenegger/nvim-jdtls',
+  -- gh 'mfussenegger/nvim-jdtls',
 }
 
 -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -233,7 +233,7 @@ require('mason-lspconfig').setup {
 local ensure_installed = vim.tbl_keys(servers or {})
 vim.list_extend(ensure_installed, {
   -- You can add other tools here that you want Mason to install
-  'jdtls',
+  -- 'jdtls',
   'prettier',
   'clang-format',
   'isort',
